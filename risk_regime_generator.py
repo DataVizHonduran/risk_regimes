@@ -4,7 +4,6 @@ import numpy as np
 import datetime
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from plotly.subplots import make_subplots
 
 # Define tickers using only non-ETF, Stooq-available instruments
 tickers = {
@@ -78,13 +77,8 @@ else:
 
 print(f"Current Risk Regime: {current_regime} (Score: {current_score:.2f})")
 
-# Create enhanced figure
-fig = make_subplots(
-    rows=2, cols=1,
-    subplot_titles=('Risk Regime Indicator', 'Individual Asset Z-Scores (Last 252 Days)'),
-    vertical_spacing=0.12,
-    row_heights=[0.7, 0.3]
-)
+# Create single figure (no subplots)
+fig = go.Figure()
 
 # Main risk regime chart
 fig.add_trace(go.Scatter(
@@ -94,7 +88,7 @@ fig.add_trace(go.Scatter(
     name="Raw Score",
     line=dict(width=1, color='lightblue'),
     opacity=0.6
-), row=1, col=1)
+))
 
 # Smoothed regime score
 fig.add_trace(go.Scatter(
@@ -103,41 +97,30 @@ fig.add_trace(go.Scatter(
     mode="lines",
     name="Smoothed (20d)",
     line=dict(width=3, color='darkblue')
-), row=1, col=1)
+))
 
-# Add threshold lines to main chart
+# Add threshold lines
 fig.add_hline(y=1, line_dash="dash", line_color="green", 
-              annotation_text="Risk-On", annotation_position="top right", row=1)
+              annotation_text="Risk-On", annotation_position="top right")
 fig.add_hline(y=0, line_dash="dash", line_color="gray", 
-              annotation_text="Neutral", annotation_position="top right", row=1)
+              annotation_text="Neutral", annotation_position="top right")
 fig.add_hline(y=-1, line_dash="dash", line_color="red", 
-              annotation_text="Risk-Off", annotation_position="bottom right", row=1)
+              annotation_text="Risk-Off", annotation_position="bottom right")
 
-# Individual asset z-scores (last year only for clarity)
-recent_data = z_scores.iloc[-252:] if len(z_scores) > 252 else z_scores
-colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan', 'magenta', 'yellow', 'lime', 'navy']
-for i, col in enumerate(df_all.columns):
-    fig.add_trace(go.Scatter(
-        x=recent_data.index,
-        y=recent_data[col],
-        mode="lines",
-        name=col,
-        line=dict(width=1, color=colors[i % len(colors)]),
-        opacity=0.7,
-        showlegend=False
-    ), row=2, col=1)
+# Get last updated timestamp
+last_updated = datetime.datetime.now().strftime('%Y-%m-%d %H:%M UTC')
 
-# Simple, clean title
-title_text = "Risk Regime Dashboard"
-
+# Update layout
 fig.update_layout(
     title={
-        'text': title_text,
+        'text': "Risk Regime Dashboard",
         'x': 0.5,
         'xanchor': 'center',
-        'font': {'size': 20}
+        'font': {'size': 24}
     },
-    height=800,
+    xaxis_title="Date",
+    yaxis_title="Z-Score",
+    height=600,
     template="plotly_white",
     hovermode='x unified',
     showlegend=True,
@@ -150,9 +133,15 @@ fig.update_layout(
     )
 )
 
-fig.update_xaxes(title_text="Date", row=2, col=1)
-fig.update_yaxes(title_text="Z-Score", row=1, col=1)
-fig.update_yaxes(title_text="Z-Score", row=2, col=1)
+# Add "Last Updated" annotation
+fig.add_annotation(
+    text=f"Last Updated: {last_updated}",
+    xref="paper", yref="paper",
+    x=1, y=-0.1,
+    xanchor='right', yanchor='top',
+    showarrow=False,
+    font=dict(size=12, color="gray")
+)
 
 # Create config to hide plotly toolbar
 config = {
