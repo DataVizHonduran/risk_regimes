@@ -24,19 +24,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install pandas pandas-datareader plotly numpy
         
-    - name: Run risk regime analysis
+    - name: Run US risk regime analysis
       run: |
-        python risk_regime_generator.py
+        python generate_us.py
+        
+    - name: Run China growth regime analysis
+      run: |
+        python generate_china.py
         
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add index.html data.json
+        git add us_regime.html china_growth.html us_regime_data.json china_growth_data.json
         # Only commit if there are changes
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "Auto-update risk regime dashboard - $(date '+%Y-%m-%d %H:%M')"
+          git commit -m "Auto-update both dashboards - $(date '+%Y-%m-%d %H:%M')"
           git push
         fi
