@@ -3,7 +3,7 @@
 Interactive dashboard that tracks market risk regimes using multi-asset z-score analysis.
 
 ## Live Dashboard
-View the dashboard at: [https://datavizhonduran.github.io/risk_regime_dashboard](https://datavizhonduran.github.io/risk_regime_dashboard)
+View the dashboard at: [https://datavizhonduran.github.io/risk_regimes](https://datavizhonduran.github.io/risk_regimes
 
 ## Features
 - Real-time risk regime indicator (Risk-On/Risk-Off/Neutral)
