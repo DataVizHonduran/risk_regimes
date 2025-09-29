@@ -150,11 +150,11 @@ config = {
 }
 
 # Save as standalone HTML file for GitHub Pages
-output_filename = "index.html"
+output_filename = "us_regime.html"
 pyo.plot(fig, filename=output_filename, auto_open=False, config=config)
 
 print(f"Chart saved as '{output_filename}'")
-print("Dashboard will be available on GitHub Pages!")
+print("US Risk Regime dashboard will be available on GitHub Pages!")
 
 # Also create summary data
 summary_data = {
@@ -165,7 +165,7 @@ summary_data = {
 }
 
 import json
-with open('data.json', 'w') as f:
+with open('us_regime_data.json', 'w') as f:
     json.dump(summary_data, f, indent=2)
 
-print("Data summary saved as 'data.json'")
+print("US regime data summary saved as 'us_regime_data.json'")
