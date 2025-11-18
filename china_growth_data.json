@@ -1,9 +1,9 @@
 {
   "current_regime": "NEUTRAL",
-  "current_score": 1.249,
-  "last_updated": "2025-11-17 11:16:13",
+  "current_score": 1.22,
+  "last_updated": "2025-11-18 11:17:20",
   "thresholds": {
-    "growth_on": 1.385,
+    "growth_on": 1.384,
     "growth_off": -0.522
   }
 }
