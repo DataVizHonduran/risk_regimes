@@ -1,9 +1,8 @@
 {
   "current_regime": "NEUTRAL",
-  "current_score": 0.28,
-  "last_updated": "2025-11-20 11:16:15",
+  "current_score": 0.2,
+  "last_updated": "2025-11-21 11:15:12",
   "recent_scores": [
-    1.117,
     1.035,
     0.977,
     0.893,
@@ -32,6 +31,7 @@
     0.404,
     0.354,
     0.321,
-    0.28
+    0.28,
+    0.2
   ]
 }
