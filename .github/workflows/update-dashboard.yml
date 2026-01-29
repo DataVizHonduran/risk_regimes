@@ -20,9 +20,10 @@ jobs:
         
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install "pandas<2.2.0" pandas-datareader yfinance plotly
-        
+              python -m pip install --upgrade pip
+              pip install "pandas<3.0.0" pandas-datareader plotly yfinance
+              if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            
     - name: Run US risk regime analysis
       run: |
         python generate_us.py
