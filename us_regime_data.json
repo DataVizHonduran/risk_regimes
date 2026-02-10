@@ -1,9 +1,8 @@
 {
   "current_regime": "RISK-ON",
-  "current_score": 1.376,
-  "last_updated": "2026-02-09 11:42:40",
+  "current_score": 1.412,
+  "last_updated": "2026-02-10 11:49:03",
   "recent_scores": [
-    0.385,
     0.379,
     0.344,
     0.368,
@@ -32,6 +31,7 @@
     1.35,
     1.357,
     1.36,
-    1.376
+    1.376,
+    1.412
   ]
 }
