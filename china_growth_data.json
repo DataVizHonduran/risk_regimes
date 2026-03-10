@@ -1,9 +1,9 @@
 {
   "current_regime": "GROWTH-ON",
-  "current_score": 1.54,
-  "last_updated": "2026-03-09 11:33:50",
+  "current_score": 1.508,
+  "last_updated": "2026-03-10 11:31:38",
   "thresholds": {
-    "growth_on": 1.394,
+    "growth_on": 1.393,
     "growth_off": -0.505
   }
 }
