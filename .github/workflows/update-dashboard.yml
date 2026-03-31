@@ -32,15 +32,15 @@ jobs:
       run: |
         python generate_china.py
         
-    - name: Commit and push changes
+    - name: Push to boquin.github.io
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git pull origin main
-        git add us_regime.html china_growth.html us_regime_data.json china_growth_data.json
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Auto-update both dashboards - $(date '+%Y-%m-%d %H:%M')"
-          git push
-        fi
+        git clone https://x-access-token:${{ secrets.BOQUIN_DEPLOY_TOKEN }}@github.com/DataVizHonduran/boquin.github.io.git _boquin
+        mkdir -p _boquin/reports/risk-regimes
+        cp us_regime.html china_growth.html us_regime_data.json china_growth_data.json _boquin/reports/risk-regimes/
+        cd _boquin
+        git config user.email "action@github.com"
+        git config user.name "GitHub Action"
+        git add reports/risk-regimes/
+        git diff --staged --quiet || git commit -m "Update risk regimes - $(date +'%Y-%m-%d')"
+        git pull --rebase
+        git push
