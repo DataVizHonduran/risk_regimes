@@ -1,42 +1,44 @@
-import pandas_datareader.data as web
+import yfinance as yf
 import pandas as pd
 import numpy as np
 import datetime
 import plotly.graph_objects as go
 import plotly.offline as pyo
 
-# Define tickers using only non-ETF, Stooq-available instruments
 tickers = {
-    "SPX": "SPY.US",
-    "DAX": "EWG.US",
-    "NIKKEI": "EWJ.US",
-    "EMEQ": "EEM.US",
-    "HYG": "HYG.US",
-    "LQD": "LQD.US",
-    "TLT": "TLT.US",
-    "VIX": "VIXY.US",
-    "DBC": "DBC.US",
-    "GLD": "GLD.US",
-    "USO": "USO.US",
-    "CPER": "CPER.US",
-    "VNQ": "VNQ.US",
-    "UUP": "UUP.US"
+    "SPX": "SPY",
+    "DAX": "EWG",
+    "NIKKEI": "EWJ",
+    "EMEQ": "EEM",
+    "HYG": "HYG",
+    "LQD": "LQD",
+    "TLT": "TLT",
+    "VIX": "VIXY",
+    "DBC": "DBC",
+    "GLD": "GLD",
+    "USO": "USO",
+    "CPER": "CPER",
+    "VNQ": "VNQ",
+    "UUP": "UUP"
 }
 
 invert_list = ["VIX", "TLT", "GLD", "UUP"]
 start = datetime.datetime(2002, 1, 1)
 end = datetime.datetime.today()
 
-# Download and align data
+# Download all tickers at once
+yf_tickers = list(tickers.values())
+raw = yf.download(yf_tickers, start=start, end=end, auto_adjust=True, progress=False)["Close"]
+
+# Build per-name series
 data = {}
-for name, ticker in tickers.items():
-    try:
-        df = web.DataReader(ticker, "stooq", start, end)
-        df = df[::-1]  # Newest to oldest → oldest to newest
-        data[name] = df["Close"]
+name_to_yf = {name: ticker for name, ticker in tickers.items()}
+for name, ticker in name_to_yf.items():
+    if ticker in raw.columns and not raw[ticker].dropna().empty:
+        data[name] = raw[ticker].dropna()
         print(f"Successfully loaded {name} ({ticker})")
-    except Exception as e:
-        print(f"Failed to load {name} ({ticker}): {e}")
+    else:
+        print(f"Failed to load {name} ({ticker}): no data")
 
 # Combine and drop missing
 df_all = pd.concat(data.values(), axis=1)

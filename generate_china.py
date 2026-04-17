@@ -2,49 +2,50 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from pandas_datareader import data as web
+import yfinance as yf
 from datetime import datetime
 
-# Define tickers for China Growth indicator
+# Keys are display names (kept with .US suffix so bucket_map is unchanged)
+# Values are Yahoo Finance tickers (no .US suffix)
 tickers = {
-    "FXI.US": "FXI.US",         # China Large-Cap
-    "MCHI.US": "MCHI.US",       # MSCI China
-    "KWEB.US": "KWEB.US",       # China Internet
-    "ASHR.US": "ASHR.US",       # A-shares
-    "AIA.US": "AIA.US",         # Asia ex-Japan
-    "EEM.US": "EEM.US",         # Emerging Markets
-    "CPER.US": "CPER.US",       # Copper
-    "BNO.US": "BNO.US",         # Brent Oil
-    "SLX.US": "SLX.US",         # Steel
-    "WOOD.US": "WOOD.US",       # Timber
-    "XME.US": "XME.US",         # Metals & Mining
-    "XLI.US": "XLI.US",         # Industrials
-    "IYT.US": "IYT.US",         # Transportation
-    "CNYB.US": "CNYB.US",       # China Bonds
-    "DBC.US": "DBC.US",         # Broad Commodities
-    "SEA.US": "SEA.US",         # Shipping
-    "VAW.US": "VAW.US",         # Materials
-    "VWO.US": "VWO.US",         # EM via Vanguard
-    "EWT.US": "EWT.US",         # Taiwan
-    "KORU.US": "KORU.US",       # Korea
+    "FXI.US": "FXI",
+    "MCHI.US": "MCHI",
+    "KWEB.US": "KWEB",
+    "ASHR.US": "ASHR",
+    "AIA.US": "AIA",
+    "EEM.US": "EEM",
+    "CPER.US": "CPER",
+    "BNO.US": "BNO",
+    "SLX.US": "SLX",
+    "WOOD.US": "WOOD",
+    "XME.US": "XME",
+    "XLI.US": "XLI",
+    "IYT.US": "IYT",
+    "CNYB.US": "CNYB",
+    "DBC.US": "DBC",
+    "SEA.US": "SEA",
+    "VAW.US": "VAW",
+    "VWO.US": "VWO",
+    "EWT.US": "EWT",
+    "KORU.US": "KORU",
 }
 
 invert_list = ['CNYB.US']
 
-# Download data via Stooq
 start = "1995-01-01"
 end = datetime.today().strftime("%Y-%m-%d")
 
-df_all = pd.DataFrame()
+# Download all at once via yfinance
+yf_symbols = list(tickers.values())
+raw = yf.download(yf_symbols, start=start, end=end, auto_adjust=True, progress=False)["Close"]
 
-for name, ticker in tickers.items():
-    try:
-        df = web.DataReader(ticker, "stooq", start=start, end=end)
-        df = df[::-1]  # reverse Stooq data (comes in descending order)
-        df_all[name] = df["Close"]
-        print(f"Successfully loaded {name}")
-    except Exception as e:
-        print(f"Failed to load {name}: {e}")
+df_all = pd.DataFrame()
+for col_name, yf_ticker in tickers.items():
+    if yf_ticker in raw.columns and not raw[yf_ticker].dropna().empty:
+        df_all[col_name] = raw[yf_ticker]
+        print(f"Successfully loaded {col_name}")
+    else:
+        print(f"Failed to load {col_name}: no data")
 
 df_all = df_all.dropna(axis=1, thresh=int(len(df_all) * 0.75))
 print(f"Combined data shape: {df_all.shape}")
